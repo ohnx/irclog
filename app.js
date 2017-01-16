@@ -9,7 +9,7 @@ var stuff = "";
 
 
 var client = new irc.Client('irc.freenode.net', 'ohnx-logbot', {
-    channels: ['##ohnx'],
+    channels: ['##ohnx', '##'],
 });
 
 var getDate = function() {
@@ -54,8 +54,9 @@ client.addListener('error', function(message) {
 app.use('/logs', express.static('logs'));
 
 app.use('/', function(req, res) {
+    res.setHeader('content-type', 'text/plain');
     recursive('logs/', function (err, files) {
-        res.send(JSON.stringify(files));
+        res.send(JSON.stringify(files).replace(/\\\\/g, '/'));
     });
 });
 
