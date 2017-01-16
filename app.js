@@ -5,11 +5,14 @@ var mkdirp = require('mkdirp');
 var express = require('express');
 var recursive = require('recursive-readdir');
 var app = express();
-var stuff = "";
 
+var serverconfigfile = fs.readFileSync("config.json");
+var serverconfig = JSON.parse(serverconfigfile);
 
-var client = new irc.Client('irc.freenode.net', 'ohnx-logbot', {
-    channels: ['##ohnx', '##'],
+var client = new irc.Client(serverconfig["host"], serverconfig["nickname"], {
+    channels: serverconfig["channels"],
+    password: serverconfig["password"],
+    port: serverconfig["port"]
 });
 
 var getDate = function() {
@@ -41,13 +44,64 @@ var log = function(chan, str) {
 client.addListener('message', function (from, to, message) {
     var now = new Date();
     var strOut = ('[' + dateFormat(now, "HH:MM:ss") + '] ' + from + ': ' + message);
-    if (message.indexOf("join") == 1 && from == "ohnx") client.join(message.substring(6));
-    if (message.indexOf("part") == 1 && from == "ohnx") client.part(message.substring(6));
+    if (from == owner) {
+        if (message.indexOf("join") == 1) client.join(message.substring(6));
+        else if (message.indexOf("part") == 1) client.part(message.substring(6));
+    }
     console.log('('+to+')'+strOut);
     log(to.replace(/#/g, '_'), strOut);
 });
 
-client.addListener('error', function(message) {
+client.addListener('nick', function (oldnick, newnick, channels) {
+    var now = new Date();
+    var strOut = ('[' + dateFormat(now, "HH:MM:ss") + '] ' + oldnick + ' -> ' + newnick);
+    for (var i = 0; i < channels.length; i++) {
+        log(channels[i].replace(/#/g, '_'), strOut);
+    }
+});
+
+client.addListener('notice', function (from, to, message) {
+    var now = new Date();
+    var strOut = ('[' + dateFormat(now, "HH:MM:ss") + '] ' + from + '! ' + message);
+    if (from == owner) {
+        if (message.indexOf("join") == 1) client.join(message.substring(6));
+        else if (message.indexOf("part") == 1) client.part(message.substring(6));
+        else if (message.indexOf("raw") == 1) client.raw(message.substring(5));
+    }
+    log(to.replace(/#/g, '_'), strOut);
+});
+
+client.addListener('join', function (chan, nick) {
+    var now = new Date();
+    var strOut = ('[' + dateFormat(now, "HH:MM:ss") + '] + ' + nick);
+    log(chan.replace(/#/g, '_'), strOut);
+});
+
+client.addListener('part', function (chan, nick, comment) {
+    var now = new Date();
+    var strOut = ('[' + dateFormat(now, "HH:MM:ss") + '] - ' + nick + ' (' + comment + ')');
+    log(chan.replace(/#/g, '_'), strOut);
+});
+
+client.addListener('kick', function (chan, nick, by, reason) {
+    var now = new Date();
+    var strOut = ('[' + dateFormat(now, "HH:MM:ss") + '] - ' + nick + ' [kick by ' + by + ': ' + reason + ']');
+    log(chan.replace(/#/g, '_'), strOut);
+});
+
+client.addListener('quit', function (who, reason, channels) {
+    var now = new Date();
+    var strOut = ('[' + dateFormat(now, "HH:MM:ss") + '] - ' + who + ' [quit :' + reason + ']');
+    for (var i = 0; i < channels.length; i++) {
+        log(channels[i].replace(/#/g, '_'), strOut);
+    }
+});
+
+client.addListener('invite', function (chan, from) {
+    if (from == owner) client.join(chan);
+});
+
+client.addListener('error', function (message) {
     console.log('error: ', message);
 });
 
