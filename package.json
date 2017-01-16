@@ -1,0 +1,27 @@
+{
+  "name": "irclog",
+  "version": "1.0.0",
+  "description": "irc logger simple",
+  "main": "app.js",
+  "dependencies": {
+    "dateformat": "^2.0.0",
+    "express": "^4.14.0",
+    "irc": "^0.5.2",
+    "mkdirp": "^0.5.1",
+    "recursive-readdir": "^2.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ohnx/irclog.git"
+  },
+  "author": "ohnx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ohnx/irclog/issues"
+  },
+  "homepage": "https://github.com/ohnx/irclog#readme"
+}
