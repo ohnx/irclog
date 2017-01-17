@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 var irc = require('irc');
 var dateFormat = require('dateformat');
 var mkdirp = require('mkdirp');
@@ -14,6 +15,8 @@ var client = new irc.Client(serverconfig["host"], serverconfig["nickname"], {
     password: serverconfig["password"],
     port: serverconfig["port"]
 });
+
+var owner = serverconfig["owner"];
 
 var getDate = function() {
     var today = new Date();
@@ -47,8 +50,16 @@ client.addListener('message', function (from, to, message) {
     if (from == owner) {
         if (message.indexOf("join") == 1) client.join(message.substring(6));
         else if (message.indexOf("part") == 1) client.part(message.substring(6));
+    } else if (message.indexOf("logs") == 1) {
+        client.say(from, "Logs for " + to + " are available here: http:\/\/kuckuck.treehouse.su:3000\/logs\/" + to.replace(/#/g, '_'));
     }
     console.log('('+to+')'+strOut);
+    log(to.replace(/#/g, '_'), strOut);
+});
+
+client.addListener('action', function(from, to, message) {
+    var now = new Date();
+    var strOut = ('[' + dateFormat(now, "HH:MM:ss") + '] * ' + from + ' ' + message);
     log(to.replace(/#/g, '_'), strOut);
 });
 
@@ -109,8 +120,9 @@ app.use('/logs', express.static('logs'));
 
 app.use('/', function(req, res) {
     res.setHeader('content-type', 'text/plain');
-    recursive('logs/', function (err, files) {
-        res.send(JSON.stringify(files).replace(/\\\\/g, '/'));
+    fs.readdir(path.join(__dirname, req.path), function(err, files) {
+        if (!err) res.send(JSON.stringify(files).replace(/\\\\/g, '/'));
+        else res.send(err);
     });
 });
 
