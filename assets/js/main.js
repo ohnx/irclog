@@ -1,4 +1,4 @@
-var currURL, initialURL = "http://irclogs.masonx.ca:3000/logs/", lastURL = [{path:"/", url:initialURL}];
+var currURL, initialURL = "http://kuckuck.masonx.ca:3000/logs/", lastURL = [{path:"/", url:initialURL}];
 
 function hGET(url, cb) {
     var xmlHttp = new XMLHttpRequest();
