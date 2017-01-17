@@ -7,6 +7,8 @@ var express = require('express');
 var recursive = require('recursive-readdir');
 var app = express();
 
+// IRC STUFF
+
 var serverconfigfile = fs.readFileSync("config.json");
 var serverconfig = JSON.parse(serverconfigfile);
 
@@ -114,6 +116,14 @@ client.addListener('invite', function (chan, from) {
 
 client.addListener('error', function (message) {
     console.log('error: ', message);
+});
+
+// WEB STUFF
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
 });
 
 app.use('/logs', express.static('logs'));
