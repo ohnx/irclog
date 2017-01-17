@@ -44,7 +44,7 @@ var initCB = function(j) {
     v += "<li data-url=\"..\" class=\"fileman-link\">..</li>";
     
     for (var i = 0; i < t.length; i++) {
-        v += "<li data-url=\""+currURL+'/'+t[i]+"\" class=\"fileman-link\">"+t[i]+"</li>";
+        v += "<li data-url=\""+currURL+'/'+t[i]+"\" class=\"fileman-link\">"+t[i].replace(/_/g, '#')+"</li>";
     }
     
     e.innerHTML = v;
