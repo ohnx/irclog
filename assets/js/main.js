@@ -1,5 +1,17 @@
 var currURL, initialURL = "http://kuckuck.masonx.ca:3000/logs/", lastURL = [{path:"/", url:initialURL}];
 
+function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 function hGET(url, cb) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
@@ -57,6 +69,11 @@ var fetchFileA = function(j) {
 };
 
 (function() {
-    currURL = initialURL;
+    var str = getParameterByName('log');
+    if (str && str != "") {
+        currURL = str;
+    } else {
+        currURL = initialURL;
+    }
     hGET(currURL, initCB);
 })();
