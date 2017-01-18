@@ -1,4 +1,4 @@
-var currURL, initialURL = "http://kuckuck.masonx.ca:3000/logs", lastURL = [{path:"/", url:initialURL}];
+var currURL, initialURL = "http://kuckuck.masonx.ca:3000/logs", lastURL = [{path:"/", url:initialURL}], myFile;
 
 function getParameterByName(name, url) {
     if (!url) {
@@ -32,6 +32,7 @@ var handleStuff = function(type, performMagic) {
     if (type.slice(-4) === ".log") {
         // is file, load log
         hGET(type, fetchFileA);
+        myFile = type;
         if (performMagic) {
             currURL = initialURL;
             hGET(currURL, initCB);
@@ -84,4 +85,7 @@ var fetchFileA = function(j) {
         currURL = initialURL;
         hGET(currURL, initCB);
     }
+    document.getElementById("refresh").addEventListener("click", function() {
+        if (myFile) hGET(myFile, fetchFileA);
+    });
 })();
