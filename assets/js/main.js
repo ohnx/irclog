@@ -79,8 +79,9 @@ var fetchFileA = function(j) {
 (function() {
     var str = getParameterByName('log');
     if (str && str != "") {
+        if (str.indexOf(initialURL) < 0) str = initialURL+'/'+str;
         currURL = str;
-        handleStuff(initialURL+'/'+str, true);
+        handleStuff(str, true);
     } else {
         currURL = initialURL;
         hGET(currURL, initCB);
