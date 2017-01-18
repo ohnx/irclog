@@ -80,7 +80,7 @@ var fetchFileA = function(j) {
     var str = getParameterByName('log');
     if (str && str != "") {
         currURL = str;
-        handleStuff(str, true);
+        handleStuff(initialURL+'/'+str, true);
     } else {
         currURL = initialURL;
         hGET(currURL, initCB);
