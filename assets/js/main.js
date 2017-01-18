@@ -1,4 +1,4 @@
-var currURL, initialURL = "http://kuckuck.masonx.ca:3000/logs/", lastURL = [{path:"/", url:initialURL}];
+var currURL, initialURL = "http://kuckuck.masonx.ca:3000/logs", lastURL = [{path:"/", url:initialURL}];
 
 function getParameterByName(name, url) {
     if (!url) {
