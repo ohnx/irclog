@@ -35,7 +35,6 @@ var handleStuff = function(type) {
     } else if (type.slice(-2) == "..") {
         var tmp = lastURL.length == 1 ? lastURL[0] : lastURL.pop();
         currURL = tmp.url;
-        currURL = tmp.path;
         hGET(currURL, initCB);
     } else {
         lastURL.push({path: currURL, url:currURL});
