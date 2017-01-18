@@ -25,6 +25,10 @@ function hGET(url, cb) {
 
 var fmHandleClick = function() {
     var type = this.getAttribute("data-url");
+    handleStuff(type);
+};
+
+var handleStuff = function(type) {
     if (type.slice(-4) === ".log") {
         // is file, load log
         hGET(type, fetchFileA);
@@ -72,8 +76,9 @@ var fetchFileA = function(j) {
     var str = getParameterByName('log');
     if (str && str != "") {
         currURL = str;
+        handleStuff(str);
     } else {
         currURL = initialURL;
+        hGET(currURL, initCB);
     }
-    hGET(currURL, initCB);
 })();
