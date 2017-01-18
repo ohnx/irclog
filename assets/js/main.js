@@ -28,10 +28,14 @@ var fmHandleClick = function() {
     handleStuff(type);
 };
 
-var handleStuff = function(type) {
+var handleStuff = function(type, performMagic) {
     if (type.slice(-4) === ".log") {
         // is file, load log
         hGET(type, fetchFileA);
+        if (performMagic) {
+            currURL = initialURL;
+            hGET(currURL, initCB);
+        }
     } else if (type.slice(-2) == "..") {
         var tmp = lastURL.length == 1 ? lastURL[0] : lastURL.pop();
         currURL = tmp.url;
@@ -75,7 +79,7 @@ var fetchFileA = function(j) {
     var str = getParameterByName('log');
     if (str && str != "") {
         currURL = str;
-        handleStuff(str);
+        handleStuff(str, true);
     } else {
         currURL = initialURL;
         hGET(currURL, initCB);
